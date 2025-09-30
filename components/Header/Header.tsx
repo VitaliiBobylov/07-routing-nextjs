@@ -1,5 +1,8 @@
 import Link from "next/link";
 import css from "./Header.module.css";
+import TagsMenu from "@/components/TagsMenu/TagsMenu";
+
+const tagsList = ["All notes", "Work", "Personal", "Ideas"];
 
 export default function Header() {
   return (
@@ -7,13 +10,14 @@ export default function Header() {
       <Link href="/" aria-label="Home">
         NoteHub
       </Link>
+
       <nav aria-label="Main Navigation">
         <ul className={css.navigation}>
           <li>
             <Link href="/">Home</Link>
           </li>
           <li>
-            <Link href="/notes">Notes</Link>
+            <TagsMenu tags={tagsList} />
           </li>
         </ul>
       </nav>
