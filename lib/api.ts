@@ -20,9 +20,17 @@ export async function fetchNotes(
   page = 1,
   tag?: string
 ): Promise<FetchNotesResponse> {
+  const params: Record<string, string | number> = { search, page, perPage: 15 };
+
+
+  if (tag && tag !== "All") {
+    params.tag = tag;
+  }
+
   const { data }: AxiosResponse<FetchNotesResponse> = await axiosInstance.get("", {
-    params: { search, page, perPage: 15, tag },
+    params,
   });
+
   return data;
 }
 
@@ -31,4 +39,10 @@ export function useNotes(search: string, page: number, tag?: string) {
     queryKey: ["notes", search, page, tag],
     queryFn: () => fetchNotes(search, page, tag),
   });
+}
+
+
+export async function fetchNoteById(id: string) {
+  const { data }: AxiosResponse<Note> = await axiosInstance.get(`/${id}`);
+  return data;
 }

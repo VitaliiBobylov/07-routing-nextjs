@@ -1,33 +1,44 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import Link from "next/link";
+import css from "./TagsMenu.module.css";
 
 interface TagsMenuProps {
   tags: string[];
 }
 
 export default function TagsMenu({ tags }: TagsMenuProps) {
-  const router = useRouter();
-
-  const handleClick = (tag: string) => {
-    if (tag === 'All') {
-      router.push('/notes/filter');
-    } else {
-      router.push(`/notes/filter/${encodeURIComponent(tag)}`);
-    }
-  };
+  const [open, setOpen] = useState(false);
 
   return (
-    <div>
-      {tags.map(tag => (
-        <button
-          key={tag}
-          onClick={() => handleClick(tag)}
-          style={{ margin: '0 5px' }}
-        >
-          {tag}
-        </button>
-      ))}
+    <div className={css.menuContainer}>
+      <button
+        className={css.menuButton}
+        onClick={() => setOpen((prev) => !prev)}
+      >
+        Notes ▾
+      </button>
+
+      {open && (
+        <ul className={css.menuList}>
+          {tags.map((tag) => {
+            const href =
+              tag === "All" ? "/notes/filter/All" : `/notes/filter/${tag}`;
+            return (
+              <li key={tag} className={css.menuItem}>
+                <Link
+                  href={href}
+                  className={css.menuLink}
+                  onClick={() => setOpen(false)}
+                >
+                  {tag}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

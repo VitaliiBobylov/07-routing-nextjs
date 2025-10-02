@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   QueryClient,
   QueryClientProvider,
-  hydrate,
+  HydrationBoundary,
+  DehydratedState,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 type Props = {
   children: ReactNode;
-  dehydratedState?: unknown;
+  dehydratedState?: DehydratedState;
 };
 
 export default function TanStackProvider({ children, dehydratedState }: Props) {
@@ -26,15 +27,11 @@ export default function TanStackProvider({ children, dehydratedState }: Props) {
       })
   );
 
-  useEffect(() => {
-    if (dehydratedState) {
-      hydrate(queryClient, dehydratedState);
-    }
-  }, [dehydratedState, queryClient]);
-
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <HydrationBoundary state={dehydratedState}>
+        {children}
+      </HydrationBoundary>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

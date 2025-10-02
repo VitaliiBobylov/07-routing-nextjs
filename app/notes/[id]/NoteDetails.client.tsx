@@ -1,33 +1,40 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { fetchNoteById } from "@/lib/api";
-import css from "./NoteDetails.module.css";
+import { useState } from "react";
+import { useNotes } from "../../../lib/api";
 
-type Props = { id: string };
+interface NotesClientProps {
+  tag?: string;
+}
 
-export default function NoteDetailsClient({ id }: Props) {
-  const {
-    data: note,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["note", id],
-    queryFn: () => fetchNoteById(id),
-    refetchOnMount: false,
-  });
+export default function NotesClient({ tag }: NotesClientProps) {
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isError } = useNotes("", page, tag);
 
-  if (isLoading) return <p>Loading, please wait...</p>;
-  if (isError || !note) return <p>Something went wrong.</p>;
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error loading notes.</p>;
+  if (!data || data.notes.length === 0) return <p>No notes found.</p>;
 
   return (
-    <div className={css.container}>
-      <div className={css.item}>
-        <div className={css.header}>
-          <h2>{note.title}</h2>
-        </div>
-        <p className={css.content}>{note.content}</p>
-        <p className={css.date}>{note.createdAt}</p>
+    <div>
+      <ul>
+        {data.notes.map((note) => (
+          <li key={note.id} style={{ marginBottom: "1.5rem" }}>
+            <h3>{note.title}</h3>
+            <p>{note.content}</p>
+            <small>
+              Tag: {note.tag} | Created:{" "}
+              {new Date(note.createdAt).toLocaleDateString()}
+            </small>
+          </li>
+        ))}
+      </ul>
+
+      <div style={{ marginTop: "1rem" }}>
+        {page > 1 && <button onClick={() => setPage(page - 1)}>Prev</button>}
+        {page < data.totalPages && (
+          <button onClick={() => setPage(page + 1)}>Next</button>
+        )}
       </div>
     </div>
   );

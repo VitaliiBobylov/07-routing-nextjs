@@ -1,53 +1,32 @@
-import css from "./Modal.module.css";
-import { useEffect, type ReactNode } from "react";
-import ReactDOM from "react-dom";
 
-interface ModalProps {
-  onClose: () => void;
-  children: ReactNode;
-}
+"use client";
 
-export default function Modal({ onClose, children }: ModalProps) {
-  const modalRoot = document.getElementById("modal-root") as HTMLElement;
+import { ReactNode, useEffect } from "react";
+import { createPortal } from "react-dom";
 
+interface Props { children: ReactNode; onClose: () => void }
+
+export default function Modal({ children, onClose }: Props) {
   useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  if (typeof document === "undefined") return null;
 
-  return ReactDOM.createPortal(
-    <div
-      className={css.backdrop}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className={css.modal}>
-        <button
-          type="button"
-          className={css.closeBtn}
-          onClick={onClose}
-          aria-label="Close"
-        >
-          ×
-        </button>
+  return createPortal(
+    <div style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
+      display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
+    }}>
+      <div style={{ background: "#fff", borderRadius: 8, maxWidth: 760, width: "90%", padding: "1rem", position: "relative" }}>
+        <button onClick={onClose} style={{ position: "absolute", right: 10, top: 10 }}>Close</button>
         {children}
       </div>
     </div>,
-    modalRoot
+    document.getElementById("modal-root")!
   );
 }

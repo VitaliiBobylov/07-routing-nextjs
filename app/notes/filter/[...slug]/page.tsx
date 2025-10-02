@@ -1,12 +1,13 @@
 import NotesClient from "./Notes.client";
 
-interface PageProps {
-  params: { slug?: string[] };
+interface NotesPageProps {
+  params: Promise<{ slug?: string[] }>;
 }
 
-export default function NotesPage({ params }: PageProps) {
-  const tag = params.slug?.[0];
-  const tagForFetch = tag === "All" ? undefined : tag;
+export default async function NotesPage({ params }: NotesPageProps) {
 
-  return <NotesClient tag={tagForFetch} />;
+  const { slug } = await params;
+  const tag = slug?.[0] ?? "All";
+
+  return <NotesClient tag={tag} />;
 }

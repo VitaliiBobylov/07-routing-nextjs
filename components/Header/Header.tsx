@@ -1,8 +1,8 @@
 import Link from "next/link";
 import css from "./Header.module.css";
-import TagsMenu from "@/components/TagsMenu/TagsMenu";
+import TagsMenu from "../TagsMenu/TagsMenu";
 
-const tagsList = ["All notes", "Work", "Personal", "Ideas"];
+const tagsList = ["All", "Work", "Personal", "Ideas"];
 
 export default function Header() {
   return (
