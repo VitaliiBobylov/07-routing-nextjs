@@ -1,10 +1,7 @@
-
-
-
 "use client";
 
 import Modal from "../../../../components/Modal/Modal";
-import NoteDetailsClient from "../../../notes/[id]/NoteDetails.module.css";
+import NoteDetailsClient from "../../../notes/[id]/NoteDetails.client";
 import { useRouter } from "next/navigation";
 
 interface Props {

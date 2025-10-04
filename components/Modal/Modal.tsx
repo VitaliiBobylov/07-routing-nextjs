@@ -1,32 +1,38 @@
-
 "use client";
 
 import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
+import css from "./Modal.module.css";
 
-interface Props { children: ReactNode; onClose: () => void }
+interface Props {
+  children: ReactNode;
+  onClose: () => void;
+}
 
 export default function Modal({ children, onClose }: Props) {
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   if (typeof document === "undefined") return null;
 
+  const modalRoot = document.getElementById("modal-root");
+  if (!modalRoot) return null;
+
   return createPortal(
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)",
-      display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
-    }}>
-      <div style={{ background: "#fff", borderRadius: 8, maxWidth: 760, width: "90%", padding: "1rem", position: "relative" }}>
-        <button onClick={onClose} style={{ position: "absolute", right: 10, top: 10 }}>Close</button>
+    <div className={css.backdrop} onClick={onClose}>
+      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+        <button className={css.closeButton} onClick={onClose}>
+          ✕
+        </button>
         {children}
       </div>
     </div>,
-    document.getElementById("modal-root")!
+    modalRoot
   );
 }

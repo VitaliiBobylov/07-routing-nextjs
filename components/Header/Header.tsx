@@ -2,7 +2,7 @@ import Link from "next/link";
 import css from "./Header.module.css";
 import TagsMenu from "../TagsMenu/TagsMenu";
 
-const tagsList = ["All", "Work", "Personal"];
+const tagsList = ["All", "Todo", "Work", "Personal", "Meeting", "Shopping"];
 
 export default function Header() {
   return (

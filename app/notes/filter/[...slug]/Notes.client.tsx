@@ -1,15 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { useNotes } from "@/lib/api";
+import { useState, useEffect } from "react";
+import { useNotes, useCreateNote } from "@/lib/api";
+import NoteList from "@/components/NoteList/NoteList";
+import Pagination from "@/components/Pagination/Pagination";
+import SearchBox from "@/components/SearchBox/SearchBox";
+import NoteForm from "@/components/NoteForm/NoteForm";
 
 interface NotesClientProps {
   tag?: string;
 }
 
 export default function NotesClient({ tag }: NotesClientProps) {
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError } = useNotes("", page, tag);
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  const { data, isLoading, isError } = useNotes(debouncedSearch, page, tag);
+  const createNoteMutation = useCreateNote();
+
+  const handleCreateClick = () => setShowForm(true);
+  const handleCloseForm = () => setShowForm(false);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error loading notes.</p>;
@@ -17,25 +37,28 @@ export default function NotesClient({ tag }: NotesClientProps) {
 
   return (
     <div>
-      <ul>
-        {data.notes.map((note) => (
-          <li key={note.id} style={{ marginBottom: "1.5rem" }}>
-            <h3>{note.title}</h3>
-            <p>{note.content}</p>
-            <small>
-              Tag: {note.tag} | Created:{" "}
-              {new Date(note.createdAt).toLocaleDateString()}
-            </small>
-          </li>
-        ))}
-      </ul>
-
-      <div style={{ marginTop: "1rem" }}>
-        {page > 1 && <button onClick={() => setPage(page - 1)}>Prev</button>}
-        {page < data.totalPages && (
-          <button onClick={() => setPage(page + 1)}>Next</button>
-        )}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "1rem",
+        }}
+      >
+        <SearchBox value={search} onChange={setSearch} />
+        <button onClick={handleCreateClick}>Create Note</button>
       </div>
+
+      {showForm && <NoteForm onClose={handleCloseForm} />}
+
+      <NoteList notes={data.notes} />
+
+      {data.totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={data.totalPages}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }

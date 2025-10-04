@@ -22,21 +22,17 @@ export default function TagsMenu({ tags }: TagsMenuProps) {
 
       {open && (
         <ul className={css.menuList}>
-          {tags.map((tag) => {
-            const href =
-              tag === "All" ? "/notes/filter/All" : `/notes/filter/${tag}`;
-            return (
-              <li key={tag} className={css.menuItem}>
-                <Link
-                  href={href}
-                  className={css.menuLink}
-                  onClick={() => setOpen(false)}
-                >
-                  {tag}
-                </Link>
-              </li>
-            );
-          })}
+          {tags.map((tag) => (
+            <li key={tag} className={css.menuItem}>
+              <Link
+                href={`/notes/filter/${tag}`}
+                className={css.menuLink}
+                onClick={() => setOpen(false)}
+              >
+                {tag}
+              </Link>
+            </li>
+          ))}
         </ul>
       )}
     </div>
