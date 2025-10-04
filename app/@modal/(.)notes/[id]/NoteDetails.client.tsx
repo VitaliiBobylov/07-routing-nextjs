@@ -9,7 +9,11 @@ export interface NoteDetailsClientProps {
 }
 
 export default function NoteDetailsClient({ id }: NoteDetailsClientProps) {
-  const { data: note, isLoading, isError } = useQuery({
+  const {
+    data: note,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["note", id],
     queryFn: () => fetchNoteById(id),
     refetchOnMount: false,
