@@ -1,5 +1,4 @@
-
-import NoteDetailsClient from "./NoteDetails.client";
+import NoteDetailsClient from "./NotePreview.client.tsx";
 
 interface PageProps {
   params: { id: string };
