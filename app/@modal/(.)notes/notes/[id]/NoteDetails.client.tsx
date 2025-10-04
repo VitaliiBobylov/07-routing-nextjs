@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "@/lib/api";
-import css from "./NoteDetails.module.css";
+import css from "../../../../../app/notes/[id]/NoteDetails.module.css";
 
-interface NoteDetailsClientProps {
+export interface NoteDetailsClientProps {
   id: string;
 }
 
@@ -20,7 +20,7 @@ export default function NoteDetailsClient({ id }: NoteDetailsClientProps) {
   });
 
   if (isLoading) return <p>Loading...</p>;
-  if (isError || !note) return <p>Something went wrong.</p>;
+  if (isError || !note) return <p>Note not found</p>;
 
   return (
     <div className={css.container}>
