@@ -2,22 +2,31 @@ import Link from "next/link";
 import css from "./Header.module.css";
 import TagsMenu from "../TagsMenu/TagsMenu";
 
-const tagsList = ["All", "Todo", "Work", "Personal", "Meeting", "Shopping"];
-
 export default function Header() {
+  const tags = [
+    { value: "All", label: "All" },
+    { value: "Work", label: "Work" },
+    { value: "Personal", label: "Personal" },
+    { value: "Todo", label: "Todo" },
+    { value: "Meeting", label: "Meeting" },
+    { value: "Shopping", label: "Shopping" },
+  ];
+
   return (
     <header className={css.header}>
-      <Link href="/" aria-label="Home">
+      <Link href="/" aria-label="Go to homepage" className={css.logo}>
         NoteHub
       </Link>
 
-      <nav aria-label="Main Navigation">
-        <ul className={css.navigation}>
-          <li>
-            <Link href="/">Home</Link>
+      <nav aria-label="Main navigation" className={css.nav}>
+        <ul className={css.navList}>
+          <li className={css.navItem}>
+            <Link href="/" className={css.navLink}>
+              Home
+            </Link>
           </li>
-          <li>
-            <TagsMenu tags={tagsList} />
+          <li className={css.navItem}>
+            <TagsMenu tags={tags} />
           </li>
         </ul>
       </nav>

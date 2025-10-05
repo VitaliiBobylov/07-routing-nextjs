@@ -28,11 +28,15 @@ export async function fetchNotes(
 
   const { data }: AxiosResponse<FetchNotesResponse> = await axiosInstance.get(
     "",
-    {
-      params,
-    }
+    { params }
   );
   return data;
+}
+
+export async function fetchNotesByTag(
+  tag: string
+): Promise<FetchNotesResponse> {
+  return fetchNotes("", 1, tag);
 }
 
 export function useNotes(search: string, page: number, tag?: string) {

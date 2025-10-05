@@ -1,5 +1,23 @@
-import SidebarNotes from "./SidebarNotes";
+import Link from "next/link";
 
-export default function SidebarDefault() {
-  return <SidebarNotes />;
+const tags = ["All", "Todo", "Work", "Personal", "Meeting", "Shopping"];
+
+export default function SidebarNotes() {
+  return (
+    <aside>
+      <nav>
+        <ul>
+          {tags.map((tag) => {
+            const href =
+              tag === "All" ? "/notes/filter" : `/notes/filter/${tag}`;
+            return (
+              <li key={tag}>
+                <Link href={href}>{tag}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </aside>
+  );
 }

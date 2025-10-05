@@ -8,11 +8,12 @@ export const metadata = {
   description: "A simple note management app built with Next.js",
 };
 
-export default function RootLayout({
-  children,
-}: {
+interface RootLayoutProps {
   children: React.ReactNode;
-}) {
+  modal?: React.ReactNode;
+}
+
+export default function RootLayout({ children, modal }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
@@ -20,6 +21,7 @@ export default function RootLayout({
           <Header />
           <main>{children}</main>
           <Footer />
+          {modal}
         </TanStackProvider>
         <div id="modal-root"></div>
       </body>
